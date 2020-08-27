@@ -97,6 +97,9 @@ int busquedaOrdenada2(vector<int> a, int buscado){
 int busquedaBinaria(vector<int> a, int buscado){
 	int inicio=0;
 	int fin=a.size()-1;
+	if(buscado>a[fin] || buscado<a[inicio]){
+		return -1;
+	}
 	while(fin>=inicio){
 		int medio=(inicio+fin)/2;
 		if(a[medio]==buscado){
