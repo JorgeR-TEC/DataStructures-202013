@@ -39,15 +39,7 @@ class LinkedList{
 		Nodo<T> *nuevo=new Nodo<T>(value);
 		append(nuevo);
 	}
-	
-	void print(){
-		Nodo<T> *temp=root;
-		while(temp!=NULL){
-			cout<<temp->value<<",";
-			temp=temp->next;
-		}
-		cout<<endl;
-	}
+
 };
 
 int main(){
@@ -57,5 +49,6 @@ int main(){
 	list.append(3);
 	list.append(5);
 	list.append(7);
+	list.append(20);
 	list.print();
 }

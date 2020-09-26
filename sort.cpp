@@ -140,6 +140,69 @@ class MergeSort: public Sort<T>{
 
 
 template <class T>
+class MergeSort: public Sort<T>{
+	
+	public:
+	void sort(vector<T> &data, int compare(T obj1, T obj2)){
+		sortAux(data, 0, data.size()-1, compare);
+	}
+	private:
+	void sortAux(vector<T> &data, int lo, int hi, int compare(T obj1, T obj2)){
+		if(lo>=hi){
+			return;
+		}
+		int mid=(lo+hi)/2;
+		sortAux(data, lo, mid, compare);
+		sortAux(data, mid+1, hi, compare);
+		merge(data, lo, mid, hi, compare);
+	}
+	
+	
+	
+	void merge(vector<T> &data, int low, int mid, int hi, int compare(T obj1, T obj2)){
+	int sizeA=mid-low+1;
+	int sizeB=hi-mid;
+	vector<T> copiaA;
+	vector<T> copiaB;
+	
+	for(int i=0; i<sizeA; i++){
+		copiaA.push_back(data[low+i]);
+	}
+	
+	for(int i=0; i<sizeB; i++){
+		copiaB.push_back(data[mid+i+1]);
+	}
+	
+	int indexA=0;
+	int indexB=0;
+	int indexData=low;
+	while(indexA<sizeA&&indexB<sizeB){
+		if(compare(copiaA[indexA],copiaB[indexB])<0){
+			data[indexData]=copiaA[indexA];
+			indexA++;
+		}else{
+			data[indexData]=copiaB[indexB];
+			indexB++;
+		}
+		indexData++;
+	}
+	
+	while(indexA<sizeA){
+		data[indexData]=copiaA[indexA];
+		indexA++;
+		indexData++;
+	}
+	
+	while(indexB<sizeB){
+		data[indexData]=copiaB[indexB];
+		indexB++;
+		indexData++;
+	}
+}
+	
+};
+
+template <class T>
 class QuickSort: public Sort<T>{
 	public:
 	void sort(vector<T> &data){
@@ -182,8 +245,8 @@ class QuickSort: public Sort<T>{
 
 
 
-
-/*int f(int copia, int *apuntador, int &referencia){
+/*int f(int copia, int *apuntador
+, int &referencia){
 	copia++;
 	(*apuntador)++;
 	referencia++;
@@ -204,7 +267,7 @@ int main(){
 	cout<<"apuntador: "<<b<<endl;
 	cout<<"referencia: "<<c<<endl;*/
 	//LuckySort<int> s;
-	QuickSort<int> s;
+	MergeSort<int> s;
 	vector<int> data={7,5,3,5,1};
 	s.sort(data);
 	s.imprimir(data);
