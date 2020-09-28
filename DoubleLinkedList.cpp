@@ -1,0 +1,106 @@
+#include <iostream>
+
+using namespace std;
+
+template <class T>
+class Nodo{
+	public:
+		T value;
+		Nodo<T> *next;
+		Nodo<T> *prev;
+		
+		Nodo(T val){
+			value=val;
+			next=NULL;
+			prev=NULL;
+		}
+};
+
+template <class T>
+class DoubleLinkedList{
+	public:
+	Nodo<T> *head;
+	Nodo<T> *tail;
+	int n;
+	
+	DoubleLinkedList(){
+		head=NULL;
+		tail=head;
+	}
+	
+	void append(Nodo<T> *nuevo){
+		if(head==NULL){
+			head=nuevo;
+			tail=nuevo;
+		}else{
+			tail->next=nuevo;
+			nuevo->prev=tail;
+			tail=nuevo;
+		}
+	}
+	
+	void append(T value){
+		Nodo<T> *nuevo=new Nodo<T>(value);
+		append(nuevo);
+	}
+	
+	void insert(Nodo<T> *nuevo, int pos){
+		if(head==NULL){
+			head=nuevo;
+			tail=nuevo;
+		}else if(pos==0){
+			nuevo->next=head;
+			head->prev=nuevo;
+			head=nuevo;
+		}else{
+			Nodo<T> *temp=head;
+			int i=0;
+			while(temp!=NULL && i<pos){
+				temp=temp->next;
+				i++;
+			}
+			if(temp==NULL){
+				tail->next=nuevo;
+				nuevo->prev=tail;
+				tail=nuevo;
+			}else{
+				nuevo->next=temp;
+				nuevo->prev=temp->prev;
+				//temp->prev=nuevo;
+				//nuevo->prev->next=nuevo;
+				temp->prev->next=nuevo;
+				temp->prev=nuevo;
+				
+			}
+		}
+	}
+	
+	void insert(T value, int pos){
+		Nodo<T> *nuevo=new Nodo<T>(value);
+		insert(nuevo, pos);
+	}
+	
+	void print(){
+		Nodo<T> *temp=head;
+		while(temp!=NULL){
+			cout<<temp->value<<",";
+			temp=temp->next;
+		}	
+		cout<<endl;
+	}
+};
+
+int main(){
+	DoubleLinkedList<int> ll;
+	ll.append(10);
+	ll.append(7);
+	ll.append(3);
+	ll.print();
+	ll.insert(15, 0);
+	ll.print();
+	ll.insert(30, 1000);
+	ll.print();
+	ll.insert(12, 1);
+	ll.print();
+	return 0;
+}
