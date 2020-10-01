@@ -21,7 +21,6 @@ class DoubleLinkedList{
 	public:
 	Nodo<T> *head;
 	Nodo<T> *tail;
-	int n;
 	
 	DoubleLinkedList(){
 		head=NULL;
@@ -75,6 +74,45 @@ class DoubleLinkedList{
 		}
 	}
 	
+	void duplicar(){
+		Nodo<T> *temp=head;
+		while(temp!=NULL){
+			Nodo<T> *sig=temp->next;
+			Nodo<T> *nuevo=new Nodo<T>(temp->value);
+			nuevo->next=sig;
+			nuevo->prev=temp;
+			temp->next=nuevo;
+			if(sig!=NULL){
+				sig->prev=nuevo;
+			}else{
+				tail=nuevo;
+			}
+			temp=sig;
+		}
+	}
+	
+	void remove(T value){
+		Nodo<T> *temp=head;
+		while(temp!=NULL){
+			if(temp->value==value){
+				if(temp->prev==NULL){
+					head=temp->next;
+				}else{
+					temp->prev->next=temp->next;
+				}
+				if(temp->next==NULL){
+					tail=temp->prev;
+				}else{
+					temp->next->prev=temp->prev;
+				}
+				delete temp;
+				return;
+			}
+			temp=temp->next;
+		}
+		
+	}
+	
 	void insert(T value, int pos){
 		Nodo<T> *nuevo=new Nodo<T>(value);
 		insert(nuevo, pos);
@@ -101,6 +139,13 @@ int main(){
 	ll.insert(30, 1000);
 	ll.print();
 	ll.insert(12, 1);
+	ll.print();
+	ll.print();
+	ll.remove(10);
+	ll.print();
+	ll.remove(15);
+	ll.print();
+	ll.remove(30);
 	ll.print();
 	return 0;
 }
