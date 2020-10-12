@@ -23,6 +23,13 @@ unordered_set<int> diferencia(unordered_set<int> A, unordered_set<int> B){
 	return C;
 }
 
+unordered_set<int> f(unordered_set<int> A, unordered_set<int> B){
+	unordered_set<int> dfAB=diferencia(A,B)
+	unordered_set<int> dfBA=diferencia(B,A)
+	unordered_set<int> C=interseccion(dfAB, dfBA);
+	return C;
+}
+
 int main(){
 	unordered_set<int> A;
 	A.insert(10);
