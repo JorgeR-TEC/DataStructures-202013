@@ -30,31 +30,75 @@ class BST{
 		root=NULL;
 	}
 	
+	int altura(Nodo<T> *temp){
+		if(temp==NULL){
+			
+			return -1;
+		}
+		int alturaIzquierda=altura(temp->izq);
+		int alturaDerecha=altura(temp->der);
+		int alt= alturaIzquierda>alturaDerecha? alturaIzquierda+1:alturaDerecha+1;
+		return alt;
+	}
+	
+	int calcularFE(Nodo<T> *temp){
+		if(temp==NULL){
+			return 0;
+		}
+		return altura(temp->der)-(altura(temp->izq));
+	}
+	
 	void insertar(T value){
 		Nodo<T> *nuevo=new Nodo<T>(value);
 		if(root==NULL){
 			root=nuevo;
 		}else{
-			insertar(nuevo, root);
+			root=insertar(nuevo, root);
 		}
 	}
 	
-	void insertar(Nodo<T> *nuevo, Nodo<T> *temp){
-		if(nuevo->value==temp->value){	//si el valor es igual, terminamos
-			return;
-		}else if(nuevo->value<temp->value){//si el valor es menor que el valor de temp
-			if(temp->izq==NULL){//si el izquierdo es nulo, ahi agregamos
-				temp->izq=nuevo;
-			}else{
-				insertar(nuevo, temp->izq);//sino, temp=temp->izq
+	Nodo<T> *rotacionDerecha(Nodo<T> *X){
+		Nodo<T> *Y=X->izq;
+		X->izq=Y->der;
+		Y->der=X;
+		return Y;
+	}
+	
+	Nodo<T> *rotacionIzquierda(Nodo<T> *X){
+		Nodo<T> *Y=X->der;
+		X->der=Y->izq;
+		Y->izq=X;
+		return Y;
+	}
+	
+	Nodo<T> *balance(Nodo<T> *temp){
+		int FE=calcularFE(temp);
+		if(FE>1){//Necesitamos Rotación Izquierda, esta cargado a la derecha
+			int FEY=calcularFE(temp->der);
+			if(FEY<0){
+				temp->der=rotacionDerecha(temp->der);
 			}
-		}else{//si el valor es mayor que el valor de temp
-			if(temp->der==NULL){	//si el derecho es nulo, ahi agregamos
-				temp->der=nuevo;
-			}else{
-				insertar(nuevo, temp->der);//sino, temp=temp->der
+			temp=rotacionIzquierda(temp);
+		}else if (FE<-1){//Necesitamos Rotación Dereha, ya que esta cargado a la izquierda
+			int FEY=calcularFE(temp->izq);
+			if(FEY>0){
+				temp->izq=rotacionIzquierda(temp->izq);
 			}
+			temp=rotacionDerecha(temp);
 		}
+		return temp;
+	}
+	
+	Nodo<T> *insertar(Nodo<T> *nuevo, Nodo<T> *temp){
+		if(temp==NULL){
+				return nuevo;
+		}else if(nuevo->value<temp->value){//si el valor es menor que el valor de temp
+			temp->izq=insertar(nuevo, temp->izq);
+		}else{//si el valor es mayor que el valor de temp
+			temp->der=insertar(nuevo, temp->der);
+		}
+		temp=balance(temp);
+		return temp;
 	}
 	
 	void inorder(){
@@ -71,19 +115,32 @@ class BST{
 		}
 	}
 	
+	void preorder(){
+		preorder(root);
+		cout<<endl;
+	}
+
 	
-	Nodo<T> *buscarIterativo(T value){
+	void preorder(Nodo<T> *temp){
+		if(temp!=NULL){
+			cout<<temp->value<<" ";
+			inorder(temp->izq);
+			inorder(temp->der);
+		}
+	}
+	
+	bool buscarIterativo(T value){
 		Nodo<T> *temp=root;
 		while(temp!=NULL){
 			if(temp->value==value){
-				return temp;
+				return true;
 			}else if(value<temp->value){
 				temp=temp->izq;
 			}else{
 				temp=temp->der;
 			}
 		}
-		return NULL;
+		return false;
 	}
 	
 	bool buscarRecursivo(T value){
@@ -128,11 +185,11 @@ class BST{
 			}else if(temp->izq!=NULL &&temp->der==NULL){//temp tiene hijo izquierdo pero no derecho
 				Nodo<T> *regresar=temp->izq;
 				delete temp;
-				return regresar;
+				temp=regresar;
 			}else if(temp->izq==NULL &&temp->der!=NULL){
 				Nodo<T> *regresar=temp->der;
 				delete temp;
-				return regresar;
+				temp=regresar;
 			}else{//el nodo a borrar tiene 2 hijos
 				Nodo<T> *sucesor=temp->der;
 				while(sucesor->izq!=NULL){
@@ -142,80 +199,26 @@ class BST{
 				temp->der=eliminar(temp->value, temp->der);
 			}
 		}
+		temp=balance(temp);
 		return temp;
-	}
-	
-	
-	int profundidad(T value){
-		Nodo<T> *temp=root;
-		int prof=0;
-		while(temp!=NULL){
-			if(temp->value==value){
-				return prof;
-			}else if(value<temp->value){
-				temp=temp->izq;
-				prof++;
-			}else{
-				temp=temp->der;
-				prof++;
-			}
-		}
-		return -1;
-	}
-	
-	
-	int alturaArbol(){
-		if(root!=NULL){
-			return altura(root);
-		}
-		return -1;
-	}
-
-	int altura(Nodo<T> *temp){
-		if(temp==NULL){
-			return -1;
-		}else if(temp->izq==NULL && temp->der==NULL){
-			return 0;
-		}else{
-			int pIzq=altura(temp->izq);
-			int pDer=altura(temp->der);
-			if(pIzq>pDer){
-				return pIzq+1;
-			}else{
-				return pDer+1;
-			}
-		}
-	}
-	
-	void inorderNivel(int buscado){
-		inorderNivel(root, 1, buscado);
-		cout<<endl;
-	}
-	
-	void inorderNivel(Nodo<T> *temp, int nivel, int nivelBuscado){
-		if(temp!=NULL){
-			inorderNivel(temp->izq, nivel+1, nivelBuscado);
-			if(nivelBuscado==nivel){
-				cout<<temp->value<<" ";
-			}
-			inorderNivel(temp->der, nivel+1, nivelBuscado);
-		}
 	}
 
 };
+	 
 
+	
 int main(){
 	BST<int> tree;
-	tree.insertar(50);
-	tree.insertar(20);
-	tree.insertar(70);
 	tree.insertar(10);
+	tree.insertar(35);
+	tree.insertar(15);
+	tree.insertar(100);
 	tree.insertar(30);
-	tree.insertar(60);
-	tree.insertar(80);
-	//tree.inorder();
-	//cout<<tree.profundidadArbol()<<endl;
-	tree.inorderNivel(1);
+	tree.insertar(20);
+	tree.preorder();
+	tree.eliminar(100);
+	tree.insertar(1);
+	tree.preorder();
 	return 0;
 }
 
