@@ -7,10 +7,12 @@ template <class T>
 class Nodo{
 	public:
 	T value;
+	bool visited;
 	unordered_map<Nodo<T> *, int> siguientes;
 	
 	Nodo(T val){
 		value=val;
+		visited=false;
 	}
 	
 	void agregarArcoDirigidoConPeso(Nodo<T> *sig, int peso){
@@ -30,6 +32,12 @@ class Nodo{
 			}
 			cout<<endl;
 	}
+	
+	/*bool conexion(Nodo<T> *nodo){
+	}
+	
+	void modificarPeso(Nodo<T> *nodo, nuevoPeso){
+	}*/
 };
 
 
@@ -70,6 +78,20 @@ class Graph{
 		}
 	}
 	
+	unordered_map<string, int> ordenarPorDia(){
+		unordered_map<string, int> a;
+		//llenar el mapa
+		return a;
+	}
+	
+	/*void modificar(T nodo1, T nodo2, int nuevoPeso){
+		//Encontrar que existan
+		//buscar si existe el arco nodo1-nodo2 y modificarlo
+	}*/
+	
+	bool BFS(T v1, T v2){
+		
+	}
 };
 
 int main(){
